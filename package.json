@@ -1,0 +1,35 @@
+{
+  "name": "et_pairs",
+  "version": "1.0.0",
+  "description": "api rest for user control",
+  "keywords": [
+    "api",
+    "rest",
+    "users"
+  ],
+  "homepage": "https://github.com/ccqsantos/et_paris#readme",
+  "bugs": {
+    "url": "https://github.com/ccqsantos/et_paris/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ccqsantos/et_paris.git"
+  },
+  "license": "ISC",
+  "author": "ccqsantos",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3"
+  },
+  "devDependencies": {
+    "prisma": "^7.2.0"
+  }
+}
