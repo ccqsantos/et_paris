@@ -1,6 +1,7 @@
 import express from 'express';
 const port = process.env.PORT || 8001;
 import users from './src/routes/userRoute.js';
+import auth from './src/routes/authRoutes.js';
 import errorHandler from './src/middlewares/errorHandler.js';
 import logger from './src/middlewares/logger.js';
 
@@ -17,9 +18,11 @@ app.use(logger);
 app.use(express.urlencoded({ extended: false }));
 
 app.get('/', (req, res)=>{
-    res.send('<span>Oieee</span>');
+    res.send('<span>Oieee :3</span>');
 }); 
 
 app.listen(port, ()=> console.log(`server running on port ${port}`));
 
 app.use('/users', users);
+
+app.user('auth', auth);
