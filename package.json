@@ -17,39 +17,30 @@
   },
   "license": "ISC",
   "author": "ccqsantos",
-  "type": "commonjs",
+  "type": "module",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
-    "dev": "nodemon server.js",
-    "prisma:generate": "npx prisma generate",
-    "prisma:migrate": "npx prisma migrate dev",
-    "prisma:migrate:deploy": "npx prisma migrate deploy",
-    "prisma:studio": "npx prisma studio",
-    "prisma:db:push": "npx prisma db push",
-    "prisma:db:pull": "npx prisma db pull",
-    "prisma:validate": "npx prisma validate",
-    "prisma:format": "npx prisma format",
-    "prisma:init": "npx prisma init"
+    "start": "node server.js --env-file=.env server",
+    "dev": "nodemon server.js --env-file=.env server"
   },
   "dependencies": {
-    "@prisma/adapter-pg": "^7.2.0",
-    "@prisma/client": "^7.2.0",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
+    "colors": "^1.4.0",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "express-validator": "^7.3.1",
     "jsonwebtoken": "^9.0.3",
-    "pg": "^8.16.3",
-    "prisma": "^7.2.0",
-    "prisma-cli": "^1.0.9"
+    "pg": "^8.20.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.8"
   },
   "devDependencies": {
     "@types/node": "^25.0.3",
     "@types/pg": "^8.16.0",
-    "nodemon": "^3.1.11",
+    "dotenv": "^17.3.1",
+    "nodemon": "^3.1.14",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
