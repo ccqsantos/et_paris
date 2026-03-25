@@ -1,14 +1,7 @@
+import sequelize from '../config/database.js';
+import userModel from '../models/userModel.js';
 import { hashPassword, comparePassword } from '../utils/bcrypt.js';
 import { generateToken } from "../utils/jwt.js";
-export const mockUsers = [
-        {id: 1, name: 'Caua Junior', createdAt: '2025/03/02', role: 'USER', birthDate: '23/08/2005', email: 'example@gmail.com', hash: '$2a$10$NQI6As9jkqZENNpU2y.gHu3JnoGNApkBENW0KA2JzoFZ.sB0y4E4i'},
-        {id: 2, name: 'Marcio Freitas', createdAt: '2025/03/02', role: 'USER', birthDate: '22/03/1987', email: 'example@gmail.com', hash: '$2a$10$NQI6As9jkqZENNpU2y.gHu3JnoGNApkBENW0KA2JzoFZ.sB0y4E4i'},
-        {id: 3, name: 'Khalil Rountree', createdAt: '2025/03/02', role: 'USER', birthDate: '21/07/2005', email: 'example@gmail.com', hash: '$2a$10$NQI6As9jkqZENNpU2y.gHu3JnoGNApkBENW0KA2JzoFZ.sB0y4E4i'},
-        {id: 4, name: 'Jorge Santana', createdAt: '2025/03/02', role: 'USER', birthDate: '20/06/2005', email: 'example@gmail.com', hash: '$2a$10$NQI6As9jkqZENNpU2y.gHu3JnoGNApkBENW0KA2JzoFZ.sB0y4E4i'},
-        {id: 5, name: 'Bryan Brown', createdAt: '2025/03/02', role: 'USER', birthDate: '14/11/2005', email: 'example@gmail.com', hash: '$2a$10$NQI6As9jkqZENNpU2y.gHu3JnoGNApkBENW0KA2JzoFZ.sB0y4E4i'},
-        {id: 6, name: 'Hiro Fushiguro', createdAt: '2025/03/02', role: 'USER', birthDate: '19/12/2005', email: 'example@gmail.com', hash: '$2a$10$NQI6As9jkqZENNpU2y.gHu3JnoGNApkBENW0KA2JzoFZ.sB0y4E4i'},
-        {id: 7, name: 'Lillian Wagner', createdAt: '2025/03/02', role: 'USER', birthDate: '26/09/2005', email: 'example@gmail.com', hash: '$2a$10$NQI6As9jkqZENNpU2y.gHu3JnoGNApkBENW0KA2JzoFZ.sB0y4E4i'},
-    ];
 
 export const userController = {
 
@@ -29,9 +22,8 @@ export const userController = {
         return res.status(200).send(userFound, console.log(`user found at index ${userIndex+1}`));
     },
     
-    
     // @desc get all users
-    async listAllUsers(req, res){
+    async getProfile(req, res){
         const findName = req.query.name;
     
         const userFound = mockUsers.find((user)=>user.name === findName);
@@ -44,36 +36,8 @@ export const userController = {
         return res.status(200).send(userFound, console.log(`user found at index ${userIndex+1}`));
     },
 
-    // @desc registrar usuario
-    async registerUser(req, res, next) {
-            const newUser = await req.body;
-
-            if(!newUser.birthDate || !newUser.createdAt || !newUser.email || !newUser.hash || !newUser.name || !newUser.role || !newUser.id){
-                const error = new Error('Information missing!');
-                error.status = 400;
-                return next(error);
-            }
-            
-            mockUsers.push(newUser);
-            return res.status(201).send({msg: 'Created succesfully!'});
-    },
-
-    async validateLogin(req, res, next) {
-        //checar se o login é válido
-            //checar email
-
-            //checar senha por rehash
-
-
-        //se valido, criar token e login
-            //mostrar perfil estando logado
-
-
-            //nao valido: msg: senha ou login incorretos
-    },
-
     // @desc mudar completamente o usuario
-    async putUser(req, res, next){
+    async updateProfile(req, res, next){
 
     const findName = req.params.name; 
 
