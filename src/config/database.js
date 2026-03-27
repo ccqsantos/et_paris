@@ -20,10 +20,10 @@ if (!dburl) {
 
 const sequelize = new Sequelize(dburl);
 
-try{
+try {
     await sequelize.authenticate();
     console.log('Authentication succesful');
-}catch(error){
+} catch (error) {
     console.log('Not possible to connect: ', error);
 }
 
