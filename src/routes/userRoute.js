@@ -12,10 +12,10 @@ router.use(authMiddleware);
 router.get('/:name', userController.getProfile);
 
 
-router.patch('/:name', userController.updateUserData);
+router.patch('/:id', userController.updateUserData);
 
 
-router.delete('/:name', userController.deleteUser);
+router.delete('/:id', userController.deleteUser);
 
 router.head('/', (req, res)=>{
     res.set('Content-Type', 'application/json');
