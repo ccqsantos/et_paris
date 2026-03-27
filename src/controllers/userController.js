@@ -1,7 +1,4 @@
-import sequelize from '../config/database.js';
 import userModel from '../models/userModel.js';
-import { hashPassword, comparePassword } from '../utils/bcrypt.js';
-import { generateToken } from "../utils/jwt.js";
 
 export const userController = {
 
@@ -18,65 +15,50 @@ export const userController = {
         }
     },
 
-    // @desc mudar completamente o usuario
-    async updateProfile(req, res, next){
-
-    const findName = req.params.name; 
-
-    const findUserIndex = mockUsers.findIndex((user)=> user.name === findName);
-
-    const putUser = req.body;
-
-    if(findUserIndex === -1){
-        const error = new Error(`User ${findName} not found`);
-        error.status = 404;
-        return next(error);
-    }
-
-    if(!putUser.birthDate || !putUser.createdAt || !putUser.email || !putUser.hash || !putUser.name || !putUser.role || !putUser.id){
-        const error = new Error('Information missing!');
-        error.status = 400;
-        return next(error);
-    }
-
-    mockUsers[findUserIndex] = putUser;
-    return res.status(200).json({msg: `User changed at index ${findUserIndex + 1}`, changedUser: mockUsers[findUserIndex]});
-    },
-
     // @desc atualizar dados de usuário
     async updateUserData(req, res, next){
-    const findName = req.params.name;
-    const findUserIndex = mockUsers.findIndex((user)=> user.name === findName);
-    const changingAttribute = req.body;
+        try{
+            const id = req.params;
 
-    if(findUserIndex === -1){
-        const error = new Error('User not found!');
-        error.status = 404;
-        return next(error);
-    }
+            const changingAttribute = req.body;
 
-    Object.assign(mockUsers[findUserIndex], changingAttribute);
+            const changingUser = await userModel.findByPk(id);
 
-    return res.status(200).json({msg: 'Attribute changed succesfully', changedUser: mockUsers[findUserIndex]});
+            if(!changingUser){
+                const error = new Error('User not found!');
+                error.status = 404;
+                return next(error);
+            }
+
+            await changingUser.update(changingAttribute);
+
+            return res.status(200).json({msg: 'Attribute changed succesfully', changedUser: changingUser});
+        }catch(error){
+            return res.status(500).json({msg: 'Server Error', errorMsg: error});
+        }
     },
 
 
     //deletar usuário
     async deleteUser(req, res, next) {
-    const findName = req.params.name; 
+        try{
+            const deletingId = req.params;
 
-    const findUserIndex = mockUsers.findIndex((user)=> user.name === findName);
+            const deletingUser = await userModel.findByPk(deletingId);
 
-    if(findUserIndex === -1){
-        const error = new Error('User not found!');
-        error.status = 404;
-        return next(error);
+            if(!deletingUser){
+                const error = new Error('User not found!');
+                error.status = 404;
+                return next(error);
+            }
+
+            await deletingUser.destroy({
+                where: {id: deletingId}
+            });
+
+            return res.status(200).json({msg: 'User deleted with success', changedUser: deletingUser});
+        }catch(error){
+            return res.status(500).json({msg: 'Server Error', errorMsg: error});
+        }
     }
-    const deletedUser = mockUsers[findUserIndex];
-
-    mockUsers.splice([findUserIndex], 1);
-    return res.status(200).json({msg: `User deleted with success at index ${findUserIndex+1}`, deletedUser: deletedUser});
-    }
-
-
 }
