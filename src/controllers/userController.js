@@ -6,34 +6,16 @@ import { generateToken } from "../utils/jwt.js";
 export const userController = {
 
     //funcoes do controller::::(mesmas funcoes do route [CRUD])
-    // @desc get by id
-    async showUserById(req, res, next){
-        const idFound = parseInt(req.params.id);
-    
-        const userFound = mockUsers.find((user)=>user.id === idFound);
-        const userIndex = mockUsers.findIndex((user)=>user.id === idFound);
-    
-        if(!userFound) {
-            const error = new Error(`A user with the id ${idFound} was not found`);
-            error.status = 404;
-            return next(error);
-        }
-    
-        return res.status(200).send(userFound, console.log(`user found at index ${userIndex+1}`));
-    },
     
     // @desc get all users
-    async getProfile(req, res){
-        const findName = req.query.name;
-    
-        const userFound = mockUsers.find((user)=>user.name === findName);
-        const userIndex = mockUsers.findIndex((user)=>user.name === findName);
-    
-        if(!userFound){
-            return res.status(200).send(mockUsers);
-        };
-    
-        return res.status(200).send(userFound, console.log(`user found at index ${userIndex+1}`));
+    async getProfile(req, res, next){
+        const findUser = req.params;
+        try{
+            const userSearched = await userModel.findOne({where: {name: findUser}}); 
+            return res.status(200).json({msg: "Profile found!", userFound: userSearched}); 
+        }catch(error){
+            return res.status(500).json({msg: 'Error searching for profile', error: error});
+        }
     },
 
     // @desc mudar completamente o usuario
@@ -58,7 +40,7 @@ export const userController = {
     }
 
     mockUsers[findUserIndex] = putUser;
-    return res.status(200).send({msg: `User changed at index ${findUserIndex + 1}`, changedUser: mockUsers[findUserIndex]});
+    return res.status(200).json({msg: `User changed at index ${findUserIndex + 1}`, changedUser: mockUsers[findUserIndex]});
     },
 
     // @desc atualizar dados de usuário
@@ -75,7 +57,7 @@ export const userController = {
 
     Object.assign(mockUsers[findUserIndex], changingAttribute);
 
-    return res.status(200).send({msg: 'Attribute changed succesfully', changedUser: mockUsers[findUserIndex]});
+    return res.status(200).json({msg: 'Attribute changed succesfully', changedUser: mockUsers[findUserIndex]});
     },
 
 
@@ -93,7 +75,7 @@ export const userController = {
     const deletedUser = mockUsers[findUserIndex];
 
     mockUsers.splice([findUserIndex], 1);
-    return res.status(200).send({msg: `User deleted with success at index ${findUserIndex+1}`, deletedUser: deletedUser});
+    return res.status(200).json({msg: `User deleted with success at index ${findUserIndex+1}`, deletedUser: deletedUser});
     }
 
 
