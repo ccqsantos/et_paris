@@ -1,4 +1,4 @@
 node_modules/
 .env
-/src/prisma/generated
-/src/generated/prisma
+/src/config/database.js
+!src/config/database.example.js
