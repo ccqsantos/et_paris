@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
 
-const userModel = sequelize.define('User', 
+const userModel = sequelize.define('User',
     {
         id: {
             type: DataTypes.INTEGER,
@@ -12,11 +12,6 @@ const userModel = sequelize.define('User',
         name: {
             type: DataTypes.STRING,
             allowNull: false,
-        },
-        createdAt: {
-            type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: DataTypes.NOW,
         },
         role: {
             type: DataTypes.ENUM('USER', 'ADMIN'),
@@ -38,6 +33,7 @@ const userModel = sequelize.define('User',
     },
     {
         freezeTableName: true,
+        timestamps: false
     }
 );
 
