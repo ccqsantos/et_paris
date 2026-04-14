@@ -12,7 +12,7 @@ router.use(authMiddleware);
 router.get('/:name', userController.getProfile);
 
 
-router.patch('/:id', userController.updateUserData);
+router.patch('/:id', userController.updateProfile);
 
 
 router.delete('/:id', userController.deleteUser);
