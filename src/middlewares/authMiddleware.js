@@ -20,6 +20,7 @@ export const authMiddleware = (req, res, next) => {
 
     try{
         const decode = verifyToken(token, JWT_SECRET);
+        
         req.user = decode;
         next();
     }catch(error){

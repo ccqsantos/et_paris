@@ -7,11 +7,23 @@ export const userController = {
 
     // @desc get all users
     async getProfile(req, res, next) {
-        const name = req.params.name;
+        const loggedInUserName = req.user.name;
+        const requestedName = req.params.name;
+
+        if(loggedInUserName !== requestedName){
+            return res.status(403).json({
+                error: "Access denied. You can only access your own profile."
+            });
+        }
 
         try {
-            const userSearched = await userModel.findOne({ where: { name: name } });
-            return res.status(200).json({ msg: "Profile found!", userFound: name });
+            const user = await userModel.findOne({ where: { name: requestedName } });
+
+            if(!user){
+                return res.status(404).json({msg: "User not found!"});
+            }
+
+            return res.status(200).json({ msg: "Profile found!", userFound: user });
         } catch (error) {
             return res.status(500).json({ msg: 'Error searching for profile', error: error.message });
         }
@@ -20,11 +32,19 @@ export const userController = {
     // @desc atualizar dados de usuário
     async updateProfile(req, res, next) {
         try {
-            const id = req.params.id;
+            const loggedInUserName = req.user.name;
+            const requestedName = req.params.name;
+
+            if(loggedInUserName !== requestedName){
+                return res.status(403).json({
+                    error: "Access denied. You can only edit your own profile."
+                });
+            }
 
             const changingAttribute = req.body;
 
-            const changingUser = await userModel.findByPk(id);
+            const changingUser = await userModel.findOne({where: {name: requestedName}});
+
 
             if (!changingUser) {
                 const error = new Error('User not found!');
@@ -44,9 +64,14 @@ export const userController = {
     //deletar usuário
     async deleteUser(req, res, next) {
         try {
-            const deletingId = req.params.id;
+            const deletingName= req.params.name;
+            const loggedInName = req.user.name;
 
-            const deletingUser = await userModel.findByPk(deletingId);
+            if(deletingName !== loggedInName){
+                return res.status(403).json({error: "Access denied. You can only delete your own profile."});
+            }
+
+            const deletingUser = await userModel.findOne({where: {name: deletingName}});
 
             if (!deletingUser) {
                 const error = new Error('User not found!');
@@ -55,7 +80,7 @@ export const userController = {
             }
 
             await deletingUser.destroy({
-                where: { id: deletingId }
+                where: { name: deletingName }
             });
 
             return res.status(200).json({ msg: 'User deleted with success', deletedUser: deletingUser });

@@ -16,18 +16,18 @@ dotenv.config({ path: envPath });
 const NODE_ENV = process.env.NODE_ENV;
 
 export const authController = {
-    async registerUser(req, res, next){
-        const { birthDate, email, password, name} = req.body; // passa o req pra valores separados
-        
-        if( !birthDate || !email || !password || !name ){
-                const error = new Error('Information missing!');
-                error.status = 400;
-                return next(error);
+    async registerUser(req, res, next) {
+        const { birthDate, email, password, name } = req.body; // passa o req pra valores separados
+
+        if (!birthDate || !email || !password || !name) {
+            const error = new Error('Information missing!');
+            error.status = 400;
+            return next(error);
         }
 
-        try{
-            const existingUser = await userModel.findOne({ where: {email: email}});
-            if(existingUser){
+        try {
+            const existingUser = await userModel.findOne({ where: { email: email } });
+            if (existingUser) {
                 const error = new Error('Email already signed in!');
                 error.status = 400;
                 return next(error);
@@ -38,27 +38,27 @@ export const authController = {
                 name, birthDate, email, hash
             });  //cria uma instancia e ja salva no banco
 
-            return res.status(201).json({msg: 'Created succesfully!', userCreated: newUser});
-        }catch(error){
-            res.status(500).json({msg: "Internal Server Error", error: error});
+            return res.status(201).json({ msg: 'Created succesfully!', userCreated: newUser });
+        } catch (error) {
+            res.status(500).json({ msg: "Internal Server Error", error: error });
         }
     },
-    
-    async loginUser(req, res, next){
-        try{
+
+    async loginUser(req, res, next) {
+        try {
             //checar se o login é válido
             //checar email
-            const {email, password} = req.body;
+            const { email, password } = req.body;
 
-            if(!email || !password){
-                return res.status(400).json({msg: 'Bad Request: Info missing!'});
+            if (!email || !password) {
+                return res.status(400).json({ msg: 'Bad Request: Info missing!' });
             }
             const user = await userModel.findOne({
-                where: {email: email},
+                where: { email: email },
             })
 
-            if(!user){
-                return res.status(401).json({msg: 'Email or password incorrect!'});
+            if (!user) {
+                return res.status(401).json({ msg: 'Email or password incorrect!' });
             }
 
             //checar senha por rehash
@@ -66,28 +66,33 @@ export const authController = {
             const comparation = await comparePassword(password, hashInDb);
             //se valido, criar token e login
             //nao valido: msg: senha ou login incorretos
-            if(!comparation){
-                return res.status(401).json({msg: 'Email or Password are incorrect!'});
+            if (!comparation) {
+                return res.status(401).json({ msg: 'Email or Password are incorrect!' });
             }
             //mostrar perfil estando logado
-            const token = generateToken(user.id);
-            
+            const token = generateToken(user.name);
+
             console.log('login realizado com sucesso!,\ntoken: ', token);
             res.cookie('token', token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'strict',
                 maxAge: 3600000 // 1 hora
-        });
+            });
 
-        return res.status(200).json({msg: "Login successful!", token: token});
+            return res.status(200).json({ msg: "Login successful!", token: token, 
+                user: {
+                    id: user.id,
+                    name: user.name,
+                    role: user.role
+                } });
         }
-        catch(error){
-            return res.status(500).json({msg: "Server Error", errorMsg: error.message});
+        catch (error) {
+            return res.status(500).json({ msg: "Server Error", errorMsg: error.message });
         }
     },
 
-    async logoutUser(req, res, next){
+    async logoutUser(req, res, next) {
         res.clearCookie('token', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',

@@ -22,7 +22,6 @@ app.use('/users', users);
 
 app.use('/auth', auth);
 
-app.listen(port, ()=> console.log(`server running on port ${port}`));
 
 //ErrorHandlerr
 app.use(errorHandler);

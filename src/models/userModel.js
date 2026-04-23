@@ -19,7 +19,7 @@ const userModel = sequelize.define('User',
             allowNull: false,
         },
         birthDate: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             allowNull: false
         },
         email: {
