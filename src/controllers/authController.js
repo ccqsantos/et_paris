@@ -70,7 +70,7 @@ export const authController = {
                 return res.status(401).json({ msg: 'Email or Password are incorrect!' });
             }
             //mostrar perfil estando logado
-            const token = generateToken(user.name);
+            const token = generateToken(user.name, user.id);
 
             console.log('login realizado com sucesso!,\ntoken: ', token);
             res.cookie('token', token, {

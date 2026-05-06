@@ -10,7 +10,7 @@ const router = express.Router();
 router.post('/register', authController.registerUser);
 
 //login route
-router.post('/login', authController.loginUser);
+router.route('/login').post(authController.loginUser);
 
 //logout route
 router.post('/logout', authMiddleware, authController.logoutUser);

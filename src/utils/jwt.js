@@ -15,9 +15,9 @@ const JWT_SECRET = process.env.JWT_SECRET;
 console.log(JWT_SECRET);
 const JWT_EXPIRES_IN = '7d';
 
-export const generateToken = (name, role = 'USER') => {
+export const generateToken = (name, id, role = 'USER') => {
     return jwt.sign(
-        {name, role},
+        {name, id, role},
         JWT_SECRET,
         {expiresIn: JWT_EXPIRES_IN}
     );

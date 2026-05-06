@@ -1,23 +1,22 @@
 import { stringify } from 'node:querystring';
 import userModel from '../models/userModel.js';
+import { header } from 'express-validator';
+import { verifyToken } from '../utils/jwt.js';
 
 export const userController = {
 
-    //funcoes do controller::::(mesmas funcoes do route [CRUD])
-
     // @desc get all users
     async getProfile(req, res, next) {
-        const loggedInUserName = req.user.name;
-        const requestedName = req.params.name;
+        const loggedInUserId = req.userId;
 
-        if(loggedInUserName !== requestedName){
+        if(!loggedInUserId){
             return res.status(403).json({
-                error: "Access denied. You can only access your own profile."
+                error: "Access denied. You are not logged in."
             });
         }
 
         try {
-            const user = await userModel.findOne({ where: { name: requestedName } });
+            const user = await userModel.findOne({ where: { id: loggedInUserId } });
 
             if(!user){
                 return res.status(404).json({msg: "User not found!"});
@@ -32,18 +31,17 @@ export const userController = {
     // @desc atualizar dados de usuário
     async updateProfile(req, res, next) {
         try {
-            const loggedInUserName = req.user.name;
-            const requestedName = req.params.name;
+            const loggedInUserId = req.userId;
 
-            if(loggedInUserName !== requestedName){
+            if(!loggedInUserId){
                 return res.status(403).json({
-                    error: "Access denied. You can only edit your own profile."
+                    error: "Access denied. You are not logged in."
                 });
             }
 
             const changingAttribute = req.body;
 
-            const changingUser = await userModel.findOne({where: {name: requestedName}});
+            const changingUser = await userModel.findOne({where: {id: loggedInUserId}});
 
 
             if (!changingUser) {
@@ -64,14 +62,13 @@ export const userController = {
     //deletar usuário
     async deleteUser(req, res, next) {
         try {
-            const deletingName= req.params.name;
-            const loggedInName = req.user.name;
+            const loggedInUserId = req.userId;
 
-            if(deletingName !== loggedInName){
-                return res.status(403).json({error: "Access denied. You can only delete your own profile."});
+            if(!loggedInUserId){
+                return res.status(403).json({error: "Access denied. You are not logged in."});
             }
 
-            const deletingUser = await userModel.findOne({where: {name: deletingName}});
+            const deletingUser = await userModel.findOne({where: {id: loggedInUserId}});
 
             if (!deletingUser) {
                 const error = new Error('User not found!');
@@ -80,7 +77,7 @@ export const userController = {
             }
 
             await deletingUser.destroy({
-                where: { name: deletingName }
+                where: { id: loggedInUserId }
             });
 
             return res.status(200).json({ msg: 'User deleted with success', deletedUser: deletingUser });
