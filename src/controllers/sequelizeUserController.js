@@ -1,5 +1,5 @@
 import { stringify } from 'node:querystring';
-import userModel from '../models/userModel.js';
+import userModel from '../models/sequelizeUserModel.js';
 import { header } from 'express-validator';
 import { verifyToken } from '../utils/jwt.js';
 

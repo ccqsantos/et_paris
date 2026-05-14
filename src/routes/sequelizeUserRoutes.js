@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { userController } from '../controllers/userController.js';
+import { userController } from '../controllers/sequelizeUserController.js';
 import { authMiddleware } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();

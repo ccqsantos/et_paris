@@ -1,5 +1,5 @@
 import sequelize from '../config/database.js';
-import userModel from '../models/userModel.js';
+import { mongooseUserModel } from '../models/mongooseUserModel.js';
 import { hashPassword, comparePassword } from '../utils/bcrypt.js';
 import { generateToken } from "../utils/jwt.js";
 import dotenv from 'dotenv';
@@ -26,7 +26,7 @@ export const authController = {
         }
 
         try {
-            const existingUser = await userModel.findOne({ where: { email: email } });
+            const existingUser = await mongooseUserModel.find({ email: email });
             if (existingUser) {
                 const error = new Error('Email already signed in!');
                 error.status = 400;
@@ -34,7 +34,7 @@ export const authController = {
             }
             const hash = await hashPassword(password);
 
-            const newUser = await userModel.create({
+            const newUser = await mongooseUserModel.create({
                 name, birthDate, email, hash
             });  //cria uma instancia e ja salva no banco
 
@@ -53,9 +53,7 @@ export const authController = {
             if (!email || !password) {
                 return res.status(400).json({ msg: 'Bad Request: Info missing!' });
             }
-            const user = await userModel.findOne({
-                where: { email: email },
-            })
+            const user = await mongooseUserModel.find({ email: email });
 
             if (!user) {
                 return res.status(401).json({ msg: 'Email or password incorrect!' });

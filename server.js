@@ -1,10 +1,15 @@
 import express from 'express';
 const port = process.env.PORT || 8001;
-import users from './src/routes/userRoute.js';
+import sUsers from './src/routes/sequelizeUserRoutes.js';
+import mUsers from './src/routes/mongooseUserRoutes.js';
 import auth from './src/routes/authRoutes.js';
 import errorHandler from './src/middlewares/errorHandler.js';
 import logger from './src/middlewares/logger.js';
 import { connectDB } from './src/config/database.js';
+import { mongoConnectDB } from './src/config/mongodatabase.js'; 
+import mongoose from 'mongoose';
+import { type } from 'os';
+import  { randomUUID } from 'crypto';
 
 const app = express();
 
@@ -18,7 +23,9 @@ app.get('/', (req, res)=>{
     res.send('<span>Oieee :3</span>');
 }); 
 
-app.use('/users', users);
+app.use('/sequelize/users', sUsers);
+
+app.use('/mongoose/users', mUsers);
 
 app.use('/auth', auth);
 
@@ -26,7 +33,8 @@ app.use('/auth', auth);
 //ErrorHandlerr
 app.use(errorHandler);
 
-connectDB().then(() => {
+
+mongoConnectDB().then(() => {
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);
     });
