@@ -26,7 +26,7 @@ export const authController = {
         }
 
         try {
-            const existingUser = await mongooseUserModel.find({ email: email });
+            const existingUser = await mongooseUserModel.findOne({ email });
             if (existingUser) {
                 const error = new Error('Email already signed in!');
                 error.status = 400;
@@ -53,7 +53,7 @@ export const authController = {
             if (!email || !password) {
                 return res.status(400).json({ msg: 'Bad Request: Info missing!' });
             }
-            const user = await mongooseUserModel.find({ email: email });
+            const user = await mongooseUserModel.findOne({ email });
 
             if (!user) {
                 return res.status(401).json({ msg: 'Email or password incorrect!' });
@@ -68,7 +68,7 @@ export const authController = {
                 return res.status(401).json({ msg: 'Email or Password are incorrect!' });
             }
             //mostrar perfil estando logado
-            const token = generateToken(user.name, user.id);
+            const token = generateToken(user.name, user._id);
 
             console.log('login realizado com sucesso!,\ntoken: ', token);
             res.cookie('token', token, {

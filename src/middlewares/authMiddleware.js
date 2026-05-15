@@ -26,15 +26,7 @@ export const authMiddleware = (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1];
-    
-    // Debug the token
-    console.log('Raw token string:', token);
-    console.log('Token type:', typeof token);
-    console.log('Token length:', token?.length);
-    console.log('Token first 10 chars:', token?.substring(0, 10));
-    console.log('Token last 10 chars:', token?.substring(token?.length - 10));
-    console.log('Token includes dots?', token?.includes('.'));
-    console.log('Number of dots:', token?.split('.').length - 1);
+
     
     // Check for hidden characters
     console.log('Token char codes:', Array.from(token?.slice(0, 20) || '').map(c => c.charCodeAt(0)));
@@ -48,6 +40,7 @@ export const authMiddleware = (req, res, next) => {
 
         req.userName = decoded.name;
         req.userId = decoded.id;
+        req.userRole = decoded.role;
         next();
     } catch(error) {
         console.error('Error name:', error.name);

@@ -23,9 +23,9 @@ app.get('/', (req, res)=>{
     res.send('<span>Oieee :3</span>');
 }); 
 
-app.use('/sequelize/users', sUsers);
+//app.use('/sequelize/users', sUsers);
 
-app.use('/mongoose/users', mUsers);
+app.use('/users', mUsers);
 
 app.use('/auth', auth);
 
